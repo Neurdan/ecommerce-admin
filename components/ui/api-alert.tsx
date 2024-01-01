@@ -1,3 +1,5 @@
+"use client"
+
 import {Alert, AlertDescription, AlertTitle} from "./alert";
 import {Copy, Server} from "lucide-react";
 import {Badge, BadgeProps} from "@/components/ui/badge";
@@ -42,10 +44,10 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
             <AlertDescription className="mt-4 flex items-center justify-between">
                 <code className="relative rounded bg-muted px-[0.3rem] pt-[0.2rem] font-mono text-sm font-semibold">
                     {description}
-                    <Button variant="outline" size="icon" onClick={onCopy}>
-                        <Copy className="h-4 w-4"/>
-                    </Button>
                 </code>
+                <Button variant="outline" size="icon" onClick={onCopy}>
+                    <Copy className="h-4 w-4"/>
+                </Button>
             </AlertDescription>
         </Alert>
     )
