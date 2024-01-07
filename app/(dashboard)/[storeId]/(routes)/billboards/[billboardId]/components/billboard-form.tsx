@@ -19,8 +19,6 @@ import {Separator}      from "@/components/ui/separator";
 import {useState}       from "react";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
-import {ApiAlert} from "@/components/ui/api-alert";
-import {useOrigin} from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
 
 interface BillboardFormProps {
@@ -40,7 +38,6 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
 
     const params = useParams();
     const router = useRouter();
-    const origin = useOrigin();
 
     const title = initialData ? "Edit billboard" : "Create billboard";
     const description = initialData ? "Edit a billboard" : "Add a new billboard";
@@ -59,10 +56,15 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
         try {
             setLoading(true);
 
-            await axios.patch(`/api/stores/${params?.storeId}`, data);
+            if (initialData) {
+                await axios.patch(`/api/${params?.storeId}/billboards/${params?.billboardId}`, data);
+            } else {
+                await axios.post(`/api/${params?.storeId}/billboards`, data);
+            }
 
             router.refresh();
-            toast.success("Store updated.");
+            router.push(`/${params?.storeId}/billboards`)
+            toast.success(toastMessage);
         } catch (error) {
             toast.error("Something went wrong.");
         } finally {
@@ -74,14 +76,14 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({ initialData }) => 
         try {
             setLoading(true);
 
-            await axios.delete(`/api/stores/${params?.storeId}`);
+            await axios.delete(`/api/${params?.storeId}/billboards/${params?.billboardId}`);
 
             router.refresh();
             router.push("/");
 
-            toast.success("Store deleted.");
+            toast.success("Billboard deleted.");
         } catch (error) {
-            toast.error("Make sure you removed all products and categories first.");
+            toast.error("Make sure you removed all categories using this billboard first.");
         } finally {
             setLoading(false);
             setOpen(false);
